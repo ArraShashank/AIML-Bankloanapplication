@@ -1,0 +1,92 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+dataset = pd.read_csv(r"C:\\Users\SYED JUNAID AHMED\Desktop\csv\bank.csv")
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+dataset['job'] = le.fit_transform(dataset['job'])
+dataset['marital'] = le.fit_transform(dataset['marital'])
+dataset['education'] = le.fit_transform(dataset['education'])
+dataset['default'] = le.fit_transform(dataset['default'])
+dataset['loan'] = le.fit_transform(dataset['loan'])
+dataset['housing'] = le.fit_transform(dataset['housing'])
+dataset['contact'] = le.fit_transform(dataset['contact'])
+dataset['month'] = le.fit_transform(dataset['month'])
+dataset['poutcome'] = le.fit_transform(dataset['poutcome'])
+dataset['deposit'] = le.fit_transform(dataset['deposit'])
+dataset.isnull().any()
+x = dataset.iloc[:,0:16].values
+y = dataset.iloc[:,16].values
+
+x[:,1].max()
+from sklearn.preprocessing import OneHotEncoder
+one1 = OneHotEncoder(categorical_features = [1])
+x = one1.fit_transform(x).toarray()
+x= x[:,1:]
+
+
+x[:,12].max()
+from sklearn.preprocessing import OneHotEncoder
+one2 = OneHotEncoder(categorical_features = [12])
+x = one2.fit_transform(x).toarray()
+
+x = x[:,1:]
+
+x[:,14].max()
+
+from sklearn.preprocessing import OneHotEncoder
+one3 = OneHotEncoder(categorical_features = [14])
+x = one3.fit_transform(x).toarray()
+
+x = x[:,1:]
+x[:,21].max()
+
+from sklearn.preprocessing import OneHotEncoder
+one4 = OneHotEncoder(categorical_features = [21])
+x = one4.fit_transform(x).toarray()
+
+x = x[:,1:]
+
+x[:,24].max()
+
+from sklearn.preprocessing import OneHotEncoder
+one5 = OneHotEncoder(categorical_features = [24])
+x = one5.fit_transform(x).toarray()
+
+x = x[:,1:]
+
+x[:,39].max()
+
+from sklearn.preprocessing import OneHotEncoder
+one6 = OneHotEncoder(categorical_features = [39])
+x = one6.fit_transform(x).toarray()
+
+x = x[:,1:]
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.25,random_state = 0)
+
+
+from sklearn.ensemble import RandomForestClassifier
+classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+
+import sklearn.metrics as metrics
+fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred)
+roc_auc = metrics.auc(fpr, tpr)
+
+import matplotlib.pyplot as plt
+plt.title('Receiver Operating Characteristic')
+plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+plt.legend(loc = 'lower right')
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.show()
+ 
